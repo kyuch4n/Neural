@@ -1,0 +1,11 @@
+@import "~antd/dist/antd.css";
+@import "./utils/base.scss";
+
+.app-container {
+  padding: 24px 8px 0;
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  overflow: hidden;
+  background-color: $light-grey;
+}
