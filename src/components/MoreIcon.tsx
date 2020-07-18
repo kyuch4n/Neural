@@ -1,18 +1,22 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import "./MoreIcon.scss";
 import { createFromIconfontCN } from "@ant-design/icons";
 
 const MyIcon = createFromIconfontCN({
-  scriptUrl: "//at.alicdn.com/t/font_516042_6mhqfbpthq6.js",
+  scriptUrl: "https://at.alicdn.com/t/font_516042_jjdgzil9d8.js",
 });
 
-const MoreIcon: FC = () => {
-  let [folded, setFolded] = useState<boolean>(true);
-  let handleClick = (): void => setFolded(!folded);
+interface IMoreIconProps {
+  folded: boolean;
+  onClick: Function;
+}
+
+const MoreIcon: FC<IMoreIconProps> = (props: IMoreIconProps) => {
+  let { folded, onClick } = props;
 
   return (
-    <div>
-      <MyIcon type={folded ? "icon-gengduo" : "icon-shouqi"} onClick={handleClick} className="icon" />
+    <div className="more-icon-container">
+      <MyIcon type={folded ? "icon-gengduo" : "icon-shouqi"} onClick={() => onClick()} className="icon" />
     </div>
   );
 };

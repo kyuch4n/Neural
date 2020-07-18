@@ -1,6 +1,13 @@
 @import "../utils/base.scss";
 
-.icon {
-  font-size: 18px;
-  cursor: pointer;
+.more-icon-container {
+  font-size: 0;
+  .icon {
+    font-size: 26px;
+    cursor: pointer;
+    color: $grey;
+    &:hover {
+      color: $blue;
+    }
+  }
 }
