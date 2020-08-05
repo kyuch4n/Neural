@@ -2,7 +2,7 @@ import React, { FC, useReducer } from "react";
 import "./App.scss";
 import SmartComponent from "./components/SmartInput";
 import MoreIcon from "./components/MoreIcon";
-import size from "./configs/winSize.json";
+import size from "./configs/win-size.json";
 
 interface IState {
   folded: boolean;

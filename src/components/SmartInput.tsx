@@ -21,7 +21,7 @@ const SmartInput: FC = () => {
     <Input
       value={value}
       className="smart-input"
-      placeholder="> Input and Press <Enter>"
+      placeholder="Search tags by name (append > to create new tag)"
       prefix={<SearchOutlined />}
       onKeyPress={handleKeyPress}
       onChange={handleChange}
