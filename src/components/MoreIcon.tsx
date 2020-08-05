@@ -3,7 +3,7 @@ import "./MoreIcon.scss";
 import { createFromIconfontCN } from "@ant-design/icons";
 
 const MyIcon = createFromIconfontCN({
-  scriptUrl: "https://at.alicdn.com/t/font_516042_jjdgzil9d8.js",
+  scriptUrl: "https://at.alicdn.com/t/font_516042_79bz883pgyl.js",
 });
 
 interface IMoreIconProps {
@@ -16,7 +16,11 @@ const MoreIcon: FC<IMoreIconProps> = (props: IMoreIconProps) => {
 
   return (
     <div className="more-icon-container">
-      <MyIcon type={folded ? "icon-gengduo" : "icon-shouqi"} onClick={() => onClick()} className="icon" />
+      <MyIcon
+        type={folded ? "icon-gengduo" : "icon-shouqi"}
+        onClick={() => onClick()}
+        className="icon"
+      />
     </div>
   );
 };

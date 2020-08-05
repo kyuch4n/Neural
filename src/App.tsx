@@ -46,7 +46,10 @@ const App: FC = () => {
   return (
     <div className="app-container">
       <SmartComponent />
-      <MoreIcon folded={state.folded} onClick={() => dispatch({ type: ActionType.TOGGLE_FOLDED })} />
+      <MoreIcon
+        folded={state.folded}
+        onClick={() => dispatch({ type: ActionType.TOGGLE_FOLDED })}
+      />
     </div>
   );
 };
