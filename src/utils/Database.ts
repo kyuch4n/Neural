@@ -197,6 +197,7 @@ export class NeuralDB {
       let cursorRequest = store.openCursor();
       cursorRequest.onsuccess = function (event: any) {
         let cursor = event.target.result;
+        // eslint-disable-next-line no-sequences
         if (!advanced && !!step) return cursor.advance(step), (advanced = true);
         if (!cursor || list.length >= pageSize) return res(list);
         list.push(cursor.value);

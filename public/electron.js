@@ -36,6 +36,9 @@ function createWindow() {
 
 app.on("ready", createWindow);
 
+/**
+ * 全局键盘监听
+ */
 // app.whenReady().then(() => {
 //   globalShortcut.register("Command+Shift+Space", () => {
 //     mainWindow.moveTop();
