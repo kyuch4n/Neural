@@ -1,0 +1,20 @@
+@import "../utils/base.scss";
+
+.tag-list-item {
+  font-size: 12px;
+  font-weight: lighter;
+  @include text-overflow-ellipsis;
+}
+
+.ant-list-item {
+  border-bottom: 1px solid $light-grey;
+}
+
+.ant-list-item.is-selected {
+  background: $light-grey;
+}
+
+.ant-list-item:hover {
+  cursor: pointer;
+  background: $light-grey;
+}

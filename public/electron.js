@@ -1,10 +1,10 @@
 const path = require("path");
-const { app, BrowserWindow, globalShortcut } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const isDev = require("electron-is-dev");
 
 const size = {
   width: 700,
-  minHeight: 112,
+  minHeight: 60,
   maxHeight: 500,
 };
 
@@ -15,32 +15,27 @@ function createWindow() {
   const LOGO_PATH = path.resolve(__dirname, "logo.png");
 
   const cfg = {
-    resizable: false,
-    fullscreenable: false,
-    maximizable: false,
     width: size.width,
     height: size.minHeight,
     center: true,
-    titleBarStyle: "hidden",
+    frame: false,
     webPreferences: {
       nodeIntegration: false,
       preload: PRELOAD_PATH,
     },
     icon: LOGO_PATH,
   };
+  process.platform === "darwin" && app.dock.setIcon(LOGO_PATH);
 
   mainWindow = new BrowserWindow(cfg);
-  process.platform === "darwin" && app.dock.setIcon(LOGO_PATH);
-  mainWindow.loadURL(isDev ? "http://localhost:3000" : `file://${path.resolve(BUILD_DIR, "index.html")}`);
+  const loadUrl = isDev
+    ? "http://localhost:3000"
+    : `file://${path.resolve(BUILD_DIR, "index.html")}`;
+  mainWindow.loadURL(loadUrl);
 }
 
 app.on("ready", createWindow);
 
-/**
- * 全局键盘监听
- */
-// app.whenReady().then(() => {
-//   globalShortcut.register("Command+Shift+Space", () => {
-//     mainWindow.moveTop();
-//   });
-// });
+app.on("window-all-closed", () => (mainWindow = null));
+
+app.on("activate", () => mainWindow === null && createWindow());

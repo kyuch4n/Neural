@@ -12,11 +12,11 @@ export enum EventType {
 }
 
 export interface Tag {
-  id: string;
+  id?: string;
   name: string;
-  description: string;
-  wikis: Array<string>;
-  expires: number;
+  descriptions?: string;
+  wikis?: Array<string>;
+  expires?: number;
 }
 
 export interface Observer {
@@ -229,7 +229,7 @@ export class NeuralDB {
    * @param keyword
    * @param limit
    */
-  public match_tag_by_name(keyword: string, limit: number = 5) {
+  public match_tag_by_name(keyword: string, limit: number = 10) {
     let transaction = this.db_ins.transaction(NeuralDB.STORE_TAG, "readonly");
     let store = transaction.objectStore(NeuralDB.STORE_TAG);
 
@@ -240,7 +240,14 @@ export class NeuralDB {
       cursorRequest.onsuccess = function (event: any) {
         let cursor = event.target.result;
         if (!cursor || list.length >= limit) return res(list);
-        if (cursor.value.name.indexOf(keyword) > -1) list.push(cursor.value);
+
+        let name = cursor.value.name;
+        let lcName = name.toLowerCase();
+        let lcKeyword = keyword.toLowerCase();
+        if (lcName.indexOf(lcKeyword) > -1) {
+          name === keyword ? list.unshift(cursor.value) : list.push(cursor.value);
+        }
+
         cursor.continue();
       };
       cursorRequest.onerror = (err: any) => rej(err);

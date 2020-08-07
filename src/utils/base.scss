@@ -1,5 +1,11 @@
-$light-grey: #edeced;
-$grey: #d3d3d3;
-$dark-grey: #c0c0c0;
+$light-grey: #f0f0f0;
+$grey: #c0c0c0;
+$dark-grey: #0a0a0a;
 
 $blue: #008dff;
+
+@mixin text-overflow-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

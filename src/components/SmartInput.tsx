@@ -1,30 +1,33 @@
-import React, { FC, useState } from "react";
-import { Input } from "antd";
-import "./SmartInput.scss";
+import React, { FC } from "react";
+import Input from "antd/lib/input";
 import { SearchOutlined } from "@ant-design/icons";
+import "./SmartInput.scss";
 
-const SmartInput: FC = () => {
-  let initialValue = "";
-  let [value, setValue] = useState(initialValue);
+interface ISmartInputProps {
+  inputVal: string;
+  onChange: any;
+  onConfirm: any;
+}
+
+const SmartInput: FC<ISmartInputProps> = (smartInputProps: ISmartInputProps) => {
+  let { inputVal, onChange, onConfirm } = smartInputProps;
 
   let handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
+    onChange(e.target.value);
   };
 
   let handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      console.log(value);
-    }
+    e.key === "Enter" && onConfirm(inputVal);
   };
 
   return (
     <Input
-      value={value}
+      value={inputVal}
       className="smart-input"
       placeholder="Search tags by name (append > to create new tag)"
       prefix={<SearchOutlined />}
-      onKeyPress={handleKeyPress}
       onChange={handleChange}
+      onKeyPress={handleKeyPress}
     />
   );
 };

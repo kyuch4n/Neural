@@ -2,7 +2,9 @@
 
 .smart-input {
   height: 60px;
-  border-radius: 8px;
+  border: 1px solid $light-grey !important;
+  box-shadow: none !important;
+
   .anticon {
     &-search {
       font-size: 24px;
@@ -10,6 +12,7 @@
       color: $grey;
     }
   }
+
   .ant-input {
     font-size: 24px;
     font-weight: 100;

@@ -1,0 +1,104 @@
+@import "../utils/base.scss";
+
+.tag-detail .tag-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: $dark-grey;
+  @include text-overflow-ellipsis;
+}
+
+.row-descriptions-expires {
+  display: flex;
+
+  .descriptions {
+    flex: 1;
+    padding-right: 12px;
+
+    .descriptions-title {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: $grey;
+    }
+
+    .descriptions-content {
+      margin-top: 1px;
+
+      &__editing {
+        text-align: right;
+
+        textarea {
+          margin-bottom: 1px;
+          font-size: 12px;
+          box-shadow: none !important;
+        }
+
+        .ant-btn + .ant-btn {
+          margin-left: 4px;
+        }
+      }
+
+      &__displaying {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .countdown {
+    padding-left: 12px;
+    text-align: right;
+    border-left: 1px solid $light-grey;
+
+    .ant-statistic-title {
+      font-size: 14px;
+      color: $grey;
+    }
+
+    .ant-statistic-content {
+      font-size: 16px;
+      font-weight: bold;
+      color: $dark-grey;
+    }
+  }
+}
+
+.row-wikis {
+  .wikis-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: $grey;
+  }
+  .wikis-content {
+    margin-top: 1px;
+
+    .ant-tag {
+      margin-bottom: 1px;
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+
+      span:not([class*="anticon"]) {
+        display: block;
+        @include text-overflow-ellipsis;
+      }
+    }
+  }
+}
+
+.wikis-popover-content {
+  display: flex;
+  align-items: center;
+
+  .ant-input {
+    margin-right: 4px;
+    height: 24px;
+    font-size: 12px;
+    font-weight: 100;
+    box-shadow: none !important;
+  }
+}
+
+.row-operations {
+  text-align: right;
+}

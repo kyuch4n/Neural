@@ -1,7 +1,7 @@
 const electron = require("electron");
 
-const { remote, ipcRenderer } = electron;
+const { remote, ipcRenderer, clipboard } = electron;
 
-global.electron = electron;
 window.ipcRenderer = ipcRenderer;
 window.remote = remote;
+window.clipboard = clipboard;
