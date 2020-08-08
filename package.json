@@ -22,7 +22,8 @@
     "electron-start": "electron .",
     "electron-build": "electron-builder",
     "build": "yarn autoclean -F && yarn react-build && yarn electron-build",
-    "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\""
+    "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
