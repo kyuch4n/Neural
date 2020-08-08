@@ -24,5 +24,6 @@ export default class Timer {
   async rollup() {
     // TODO:
     let result = await nerualDb.query_tag_is_expired();
+    console.log(result)
   }
 }
