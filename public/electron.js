@@ -19,6 +19,7 @@ function createWindow() {
     height: size.minHeight,
     center: true,
     frame: false,
+    resizable: false,
     webPreferences: {
       nodeIntegration: false,
       preload: PRELOAD_PATH,

@@ -12,7 +12,8 @@
     "productName": "Neural",
     "mac": {
       "icon": "public/logo.png",
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "identity": null
     }
   },
   "scripts": {
