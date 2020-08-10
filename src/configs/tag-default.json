@@ -1,4 +1,6 @@
 {
   "expires": 86400000,
-  "expireCheckInterval": 1800000
+  "@comment_expires": "1d",
+  "expireCheckInterval": 10800000,
+  "@comment_expireCheckInterval": "3h"
 }

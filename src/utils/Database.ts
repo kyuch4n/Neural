@@ -11,12 +11,18 @@ export enum EventType {
   DeleteTag,
 }
 
+export enum TagStatus {
+  PENDING = "pending",
+  DONE = "done",
+}
+
 export interface Tag {
   id?: string;
   name: string;
   descriptions?: string;
   wikis?: Array<string>;
   expires?: number;
+  status?: TagStatus;
 }
 
 export interface Observer {
@@ -140,8 +146,11 @@ export class NeuralDB {
     tag.id = tag.id || id;
 
     // 默认过期时间
-    let expires = new Date().getTime() + tagDefault.expires;
+    let expires = Date.now() + tagDefault.expires;
     tag.expires = tag.expires || expires;
+
+    // status
+    tag.status = tag.status || TagStatus.PENDING;
 
     let transaction = this.db_ins.transaction(NeuralDB.STORE_TAG, "readwrite");
     let store = transaction.objectStore(NeuralDB.STORE_TAG);
@@ -264,12 +273,14 @@ export class NeuralDB {
     return new Promise((res, rej) => {
       let list: Array<Tag> = [];
       let cursorRequest = store.openCursor();
-      let currentTime = new Date().getTime();
+      let currentTime = Date.now();
 
       cursorRequest.onsuccess = function (event: any) {
         let cursor = event.target.result;
         if (!cursor) return res(list);
-        if (cursor.value.expires <= currentTime) list.push(cursor.value);
+        if (cursor.value.status === TagStatus.PENDING && cursor.value.expires <= currentTime) {
+          list.push(cursor.value);
+        }
         cursor.continue();
       };
       cursorRequest.onerror = (err: any) => rej(err);

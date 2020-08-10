@@ -1,29 +1,56 @@
-import nerualDb from "./Database";
+import nerualDb, { Tag } from "./Database";
 import tagDefault from "../configs/tag-default.json";
+import { show } from "./Window";
 
 interface TimerOption {
-  interval?: number; // ms
+  interval?: number;
+  callback?: Function;
 }
 
 export default class Timer {
-  private id?: number;
+  private id: number | null = null;
   private interval: number;
+  private callback?: Function | null = null;
 
   constructor(opts: TimerOption = {}) {
     this.interval = opts.interval || tagDefault.expireCheckInterval;
+    this.callback = opts.callback || null;
   }
 
-  start() {
-    this.id = window.setInterval(this.rollup, this.interval);
+  start(callback: Function) {
+    if (!this.id) {
+      this.callback = callback;
+      this.id = window.setInterval(this.rollup(), this.interval);
+    }
   }
 
   stop() {
     this.id && window.clearInterval(this.id);
+    this.id = null;
+    this.callback = null;
   }
 
-  async rollup() {
-    // TODO:
-    let result = await nerualDb.query_tag_is_expired();
-    console.log(result)
+  notify(tag: Tag) {
+    let notification = new Notification(tag.name, {
+      tag: tag.name,
+      body: tag.descriptions || "您有一个标签待处理，点击查看",
+    });
+
+    notification.onclick = (event: any) => {
+      show();
+      this.callback!(event.target.title);
+    };
+  }
+
+  rollup() {
+    nerualDb.ready(async () => {
+      try {
+        let result: any = await nerualDb.query_tag_is_expired();
+        result.map((i: Tag) => this.notify(i));
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    return this.rollup;
   }
 }

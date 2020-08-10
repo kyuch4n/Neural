@@ -40,10 +40,16 @@ const registWindowEvent = () => {
   });
 };
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+});
 
 app.on("activate", () => {
   if (mainWindow) {
     mainWindow.show();
   }
+});
+
+app.on("before-quit", () => {
+  app.exit();
 });

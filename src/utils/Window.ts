@@ -5,6 +5,11 @@ export enum SizeType {
   MAX = 1,
 }
 
+export const show = () => {
+  const win = window.remote.getCurrentWindow();
+  win.show();
+};
+
 export const resizeTo = (sizeType: SizeType) => {
   const win = window.remote.getCurrentWindow();
 

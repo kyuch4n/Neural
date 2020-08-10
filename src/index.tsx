@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
+import Event from "./utils/Event";
 
 declare global {
   interface Window {
@@ -10,4 +11,5 @@ declare global {
   }
 }
 
+Event.regist();
 ReactDOM.render(<App />, document.getElementById("root"));

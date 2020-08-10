@@ -5,9 +5,11 @@ import TagList from "./components/TagList";
 import TagDetail from "./components/TagDetail";
 import neuralDB, { Tag } from "./utils/Database";
 import { SizeType, resizeTo, shake } from "./utils/Window";
+import Timer from "./utils/Timer";
 import "./App.scss";
 
 const WAIT = 500;
+const timer = new Timer();
 
 const Pattern = {
   isEmpty: (input: string) => input.trim() === ">" || input.trim() === "",
@@ -18,6 +20,7 @@ const App: FC = () => {
   let [inputVal, setInputVal] = useState("");
   let [selectedTag, setSelectedTag] = useState<Tag | null>(null);
   let [tagList, setTaglist] = useState<Array<Tag>>([]);
+  timer.start(setInputVal);
 
   let createTag = (input: string) => {
     input = input.trim();

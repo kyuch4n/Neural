@@ -49,15 +49,30 @@
     text-align: right;
     border-left: 1px solid $light-grey;
 
-    .ant-statistic-title {
+    .tag-is-done {
+      font-size: 24px;
+      color: $blue;
+    }
+
+    .countdown-title {
       font-size: 14px;
       color: $grey;
     }
 
-    .ant-statistic-content {
-      font-size: 16px;
-      font-weight: bold;
-      color: $dark-grey;
+    .countdown-content {
+      .countdown-button-group {
+        padding-top: 4px;
+
+        .ant-btn + .ant-btn {
+          margin-left: 4px;
+        }
+      }
+
+      .ant-statistic-content {
+        font-size: 16px;
+        font-weight: bold;
+        color: $dark-grey;
+      }
     }
   }
 }
@@ -69,6 +84,7 @@
     font-size: 14px;
     color: $grey;
   }
+
   .wikis-content {
     margin-top: 1px;
 

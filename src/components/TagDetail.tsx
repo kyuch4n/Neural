@@ -12,9 +12,13 @@ import {
   CheckOutlined,
   LinkOutlined,
   CloseOutlined,
+  SmileFilled,
+  SmileOutlined,
+  FrownOutlined,
 } from "@ant-design/icons";
-import neuralDB, { Tag } from "../utils/Database";
+import neuralDB, { Tag, TagStatus } from "../utils/Database";
 import { shake } from "../utils/Window";
+import tagDefault from "../configs/tag-default.json";
 import "./TagDetail.scss";
 
 const { Countdown } = Statistic;
@@ -29,6 +33,9 @@ interface ITagDetailProps {
 const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
   let { selectedTag, onDelete, onUpdate } = tagDetailProps;
 
+  /************************************************************************************************
+   * Wikis
+   ************************************************************************************************/
   let [wikis, setWikis] = useState(selectedTag.wikis || []);
   let [wikiUrl, setWikiUrl] = useState("");
 
@@ -108,8 +115,19 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     </div>
   );
 
+  /************************************************************************************************
+   * Wikis End
+   ************************************************************************************************/
+
+  /************************************************************************************************
+   * Descriptions
+   ************************************************************************************************/
   let [descriptions, setDescriptions] = useState(selectedTag.descriptions || "");
   let [isEditing, setIsEditing] = useState(false);
+
+  let { expires, status } = selectedTag;
+  let isExpired = expires! <= Date.now();
+  let isDone = status === TagStatus.DONE;
 
   let handleChangeDescriptions = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescriptions(e.target.value);
@@ -134,6 +152,37 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
   let handleCancelEdit = () => {
     setDescriptions(selectedTag.descriptions || "");
     setIsEditing(false);
+  };
+
+  let handleDone = () => {
+    neuralDB.ready(async () => {
+      try {
+        let tag: Tag = Object.assign({}, selectedTag, {
+          status: TagStatus.DONE,
+        });
+        neuralDB.upsert_tag(tag);
+        onUpdate(tag);
+      } catch (e) {
+        shake();
+        console.log(e);
+      }
+    });
+  };
+
+  let handleDelay = () => {
+    neuralDB.ready(async () => {
+      try {
+        let tag: Tag = Object.assign({}, selectedTag, {
+          expires: Date.now() + tagDefault.expires,
+          status: TagStatus.PENDING,
+        });
+        neuralDB.upsert_tag(tag);
+        onUpdate(tag);
+      } catch (e) {
+        shake();
+        console.log(e);
+      }
+    });
   };
 
   let descriptionsRow = (
@@ -171,9 +220,50 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
           )}
         </div>
       </div>
-      <Countdown className="countdown" title="Expires" value={selectedTag.expires} />
+
+      <div className="countdown">
+        {isDone ? (
+          <SmileFilled className="tag-is-done" />
+        ) : (
+          <div>
+            <div className="countdown-title">Expires</div>
+            <div className="countdown-content">
+              {isExpired ? (
+                <div className="countdown-button-group">
+                  <Button
+                    type="primary"
+                    icon={<SmileOutlined />}
+                    size="small"
+                    onClick={handleDone}
+                  />
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<FrownOutlined />}
+                    size="small"
+                    onClick={handleDelay}
+                  />
+                </div>
+              ) : (
+                <Countdown value={selectedTag.expires} />
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
+
+  /************************************************************************************************
+   * Descriptions End
+   ************************************************************************************************/
+
+  useEffect(() => {
+    setWikiUrl("");
+    setWikis(selectedTag.wikis || []);
+    setIsEditing(false);
+    setDescriptions(selectedTag.descriptions || "");
+  }, [selectedTag]);
 
   let handleDeleteTag = () => {
     neuralDB.ready(async () => {
@@ -187,13 +277,6 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
       }
     });
   };
-
-  useEffect(() => {
-    setWikiUrl("");
-    setWikis(selectedTag.wikis || []);
-    setIsEditing(false);
-    setDescriptions(selectedTag.descriptions || "");
-  }, [selectedTag]);
 
   return (
     <div className="tag-detail">
