@@ -1,13 +1,15 @@
 const path = require("path");
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Tray } = require("electron");
 const isDev = require("electron-is-dev");
 
+/************************************************************************************************
+ * BrowserWindow
+ ************************************************************************************************/
 let mainWindow = null;
-
 const createWindow = () => {
   const BUILD_DIR = path.resolve(__dirname, "../build");
   const PRELOAD_PATH = path.resolve(__dirname, "preload.js");
-  const LOGO_PATH = path.resolve(__dirname, "logo.png");
+  const LOGO_PATH = path.resolve(__dirname, "logo512.png");
 
   mainWindow = new BrowserWindow({
     width: 700,
@@ -40,8 +42,37 @@ const registWindowEvent = () => {
   });
 };
 
+/************************************************************************************************
+ * BrowserWindow End
+ ************************************************************************************************/
+
+/************************************************************************************************
+ * Tray
+ ************************************************************************************************/
+
+let tray;
+const createTray = () => {
+  const LOGO_PATH = path.resolve(__dirname, "logo32@2x.png");
+  tray = new Tray(LOGO_PATH);
+  tray.setToolTip("Neural");
+  registTrayEvent();
+};
+
+const registTrayEvent = () => {
+  tray.on("click", () => {
+    if (mainWindow) {
+      mainWindow.show();
+    }
+  });
+};
+
+/************************************************************************************************
+ * Tray End
+ ************************************************************************************************/
+
 app.on("ready", () => {
   createWindow();
+  createTray();
 });
 
 app.on("activate", () => {
