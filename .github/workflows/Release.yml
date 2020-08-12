@@ -20,10 +20,12 @@ jobs:
           node-version: "10.x"
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install yarn -g
+          yarn
 
-      - name: Build App
-        run: npm run build
+      - name: Build Application
+        run: yarn build
 
       - name: Create Release
         id: create_release
