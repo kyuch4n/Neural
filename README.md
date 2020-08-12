@@ -43,4 +43,4 @@ ${tag}
 - [ ] 开机自启动
 - [ ] develop autodeploy
 - [ ] ? 查看使用说明
-- [ ] @all 查看全部列表
+- [x] @all 查看全部列表

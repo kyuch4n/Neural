@@ -52,8 +52,11 @@ const App: FC = () => {
         input = input.trim();
 
         switch (true) {
-          case Pattern.isEmpty(input):
           case Pattern.isCreateCommand(input):
+            return;
+          case Pattern.isEmpty(input):
+            setTaglist([]);
+            setSelectedTag(null);
             return;
           case Pattern.isSymbolCommand(input):
             let symbol = input.slice(1).trim().toUpperCase();

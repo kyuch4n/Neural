@@ -1,4 +1,4 @@
-import nerualDb, { Tag } from "./Database";
+import neuralDb, { Tag } from "./Database";
 import tagDefault from "../configs/tag-default.json";
 import { show } from "./Window";
 
@@ -20,7 +20,7 @@ export default class Timer {
   start(callback: Function) {
     if (!this.id) {
       this.callback = callback;
-      this.id = window.setInterval(this.rollup(), this.interval);
+      this.id = this.rollup();
     }
   }
 
@@ -43,14 +43,13 @@ export default class Timer {
   }
 
   rollup() {
-    nerualDb.ready(async () => {
-      try {
-        let result: any = await nerualDb.query_tag_is_expired();
-        result.map((i: Tag) => this.notify(i));
-      } catch (e) {
-        console.log(e);
-      }
-    });
-    return this.rollup;
+    let self = this;
+
+    return window.setInterval(() => {
+      neuralDb.ready(async () => {
+        let result: any = await neuralDb.query_tag_is_expired();
+        result.map((i: Tag) => self.notify(i));
+      });
+    }, this.interval);
   }
 }
