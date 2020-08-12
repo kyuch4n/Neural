@@ -43,7 +43,7 @@ jobs:
       #     prerelease: false
 
       - name: test
-        run: cd dir && ls
+        run: cd dist && ls
 
       # - name: Upload Release Asset
       #   id: upload_release_asset
