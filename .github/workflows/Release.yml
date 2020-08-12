@@ -8,7 +8,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,7 +37,6 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: true
           prerelease: false
-
       # - name: Upload Release Asset
       #   id: upload_release_asset
       #   uses: actions/upload-release-asset@v1
