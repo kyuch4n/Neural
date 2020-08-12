@@ -19,33 +19,33 @@ jobs:
         with:
           node-version: "10.x"
 
+      - name: Install dependencies
+        run: |
+          npm install yarn -g
+          yarn
+
+      - name: Build Application
+        run: yarn build
+
+      - name: Get Package Version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.1.0
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-version.outputs.current-version}}
+          release_name: v${{ steps.package-version.outputs.current-version}}
+          draft: true
+          prerelease: false
+
       - name: test
         run: |
           ls
           pwd
-
-      # - name: Install dependencies
-      #   run: |
-      #     npm install yarn -g
-      #     yarn
-
-      # - name: Build Application
-      #   run: yarn build
-
-      # - name: Get Package Version
-      #   id: package-version
-      #   uses: martinbeentjes/npm-get-version-action@v1.1.0
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      #   with:
-      #     tag_name: v${{ steps.package-version.outputs.current-version}}
-      #     release_name: v${{ steps.package-version.outputs.current-version}}
-      #     draft: true
-      #     prerelease: false
 
       # - name: Upload Release Asset
       #   id: upload_release_asset
