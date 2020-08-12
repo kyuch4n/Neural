@@ -19,36 +19,41 @@ jobs:
         with:
           node-version: "10.x"
 
-      - name: Install dependencies
+      - name: test
         run: |
-          npm install yarn -g
-          yarn
+          ls
+          pwd
 
-      - name: Build Application
-        run: yarn build
+      # - name: Install dependencies
+      #   run: |
+      #     npm install yarn -g
+      #     yarn
 
-      - name: Get Package Version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.1.0
+      # - name: Build Application
+      #   run: yarn build
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        with:
-          tag_name: v${{ steps.package-version.outputs.current-version}}
-          release_name: v${{ steps.package-version.outputs.current-version}}
-          draft: true
-          prerelease: false
+      # - name: Get Package Version
+      #   id: package-version
+      #   uses: martinbeentjes/npm-get-version-action@v1.1.0
 
-      - name: Upload Release Asset
-        id: upload_release_asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/Neural-${{ steps.package-version.outputs.current-version}}-mac.zip
-          asset_name: Neural-${{ steps.package-version.outputs.current-version}}-mac.zip
-          asset_content_type: application/zip
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      #   with:
+      #     tag_name: v${{ steps.package-version.outputs.current-version}}
+      #     release_name: v${{ steps.package-version.outputs.current-version}}
+      #     draft: true
+      #     prerelease: false
+
+      # - name: Upload Release Asset
+      #   id: upload_release_asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./dist/Neural-${{ steps.package-version.outputs.current-version}}-mac.zip
+      #     asset_name: Neural-${{ steps.package-version.outputs.current-version}}-mac.zip
+      #     asset_content_type: application/zip
