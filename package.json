@@ -20,8 +20,8 @@
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "electron-start": "electron .",
-    "electron-build": "electron-builder",
-    "build": "yarn autoclean --force && yarn react-build && electron-builder --publish=never",
+    "electron-build": "electron-builder -m --publish=never",
+    "build": "yarn autoclean --force && yarn react-build && yarn electron-build",
     "start": "concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "eject": "react-scripts eject"
   },
