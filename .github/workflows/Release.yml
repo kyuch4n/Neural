@@ -9,7 +9,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -27,10 +27,11 @@ jobs:
       - name: Build Application
         run: yarn build
 
-      - name: Get Package Version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.1.0
+      - name: package-version
+        uses: yunree/package-version@v1.0.2
 
+      - name: echo
+        run: echo ${{ env.PACKAGE_VERSION }}
       # - name: Create Release
       #   id: create_release
       #   uses: actions/create-release@v1
@@ -44,7 +45,6 @@ jobs:
 
       - name: test
         run: cd dist && ls
-
       # - name: Upload Release Asset
       #   id: upload_release_asset
       #   uses: actions/upload-release-asset@v1
