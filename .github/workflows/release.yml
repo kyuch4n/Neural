@@ -30,28 +30,24 @@ jobs:
       - name: package-version
         uses: yunree/package-version@v1.0.2
 
-      - name: echo
-        run: echo ${{ env.PACKAGE_VERSION }}
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      #   with:
-      #     tag_name: v${{ steps.package-version.outputs.current-version}}
-      #     release_name: v${{ steps.package-version.outputs.current-version}}
-      #     draft: true
-      #     prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: v${{ env.PACKAGE_VERSION }}
+          draft: true
+          prerelease: false
 
-      - name: test
-        run: cd dist && ls
-      # - name: Upload Release Asset
-      #   id: upload_release_asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./dist/Neural-${{ steps.package-version.outputs.current-version}}-mac.zip
-      #     asset_name: Neural-${{ steps.package-version.outputs.current-version}}-mac.zip
-      #     asset_content_type: application/zip
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/Neural-${{ env.PACKAGE_VERSION }}-mac.zip
+          asset_name: Neural-${{ env.PACKAGE_VERSION }}-mac.zip
+          asset_content_type: application/zip
