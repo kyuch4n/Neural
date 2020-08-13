@@ -27,7 +27,7 @@ jobs:
       - name: Build Application
         run: yarn build
 
-      - name: package-version
+      - name: Get Package Version
         uses: yunree/package-version@v1.0.2
 
       - name: Create Release
