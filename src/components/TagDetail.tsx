@@ -124,10 +124,8 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
    ************************************************************************************************/
   let [descriptions, setDescriptions] = useState(selectedTag.descriptions || "");
   let [isEditing, setIsEditing] = useState(false);
-
-  let { expires, status } = selectedTag;
-  let isExpired = expires! <= Date.now();
-  let isDone = status === TagStatus.DONE;
+  let [isExpired, setIsExpired] = useState(selectedTag.expires! <= Date.now());
+  let [isDone, setIsDone] = useState(selectedTag.status === TagStatus.DONE);
 
   let handleChangeDescriptions = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescriptions(e.target.value);
@@ -190,30 +188,14 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
       <div className="descriptions">
         <div className="descriptions-title">
           Descriptions
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => setIsEditing(true)}
-          />
+          <Button type="primary" icon={<EditOutlined />} size="small" onClick={() => setIsEditing(true)} />
         </div>
         <div className="descriptions-content">
           {isEditing ? (
             <div className="descriptions-content__editing">
               <TextArea rows={4} value={descriptions} onChange={handleChangeDescriptions} />
-              <Button
-                type="primary"
-                icon={<CheckOutlined />}
-                size="small"
-                onClick={handleConfirmEdit}
-              />
-              <Button
-                type="primary"
-                danger
-                icon={<CloseOutlined />}
-                size="small"
-                onClick={handleCancelEdit}
-              />
+              <Button type="primary" icon={<CheckOutlined />} size="small" onClick={handleConfirmEdit} />
+              <Button type="primary" danger icon={<CloseOutlined />} size="small" onClick={handleCancelEdit} />
             </div>
           ) : (
             <div className="descriptions-content__displaying">{descriptions}</div>
@@ -230,22 +212,11 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
             <div className="countdown-content">
               {isExpired ? (
                 <div className="countdown-button-group">
-                  <Button
-                    type="primary"
-                    icon={<SmileOutlined />}
-                    size="small"
-                    onClick={handleDone}
-                  />
-                  <Button
-                    type="primary"
-                    danger
-                    icon={<FrownOutlined />}
-                    size="small"
-                    onClick={handleDelay}
-                  />
+                  <Button type="primary" icon={<SmileOutlined />} size="small" onClick={handleDone} />
+                  <Button type="primary" danger icon={<FrownOutlined />} size="small" onClick={handleDelay} />
                 </div>
               ) : (
-                <Countdown value={selectedTag.expires} />
+                <Countdown value={selectedTag.expires} onFinish={() => setIsExpired(true)} />
               )}
             </div>
           </div>
@@ -259,10 +230,13 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
    ************************************************************************************************/
 
   useEffect(() => {
+    let { wikis = [], descriptions = "", expires, status } = selectedTag;
     setWikiUrl("");
-    setWikis(selectedTag.wikis || []);
+    setWikis(wikis || []);
     setIsEditing(false);
-    setDescriptions(selectedTag.descriptions || "");
+    setDescriptions(descriptions || "");
+    setIsExpired(expires! <= Date.now());
+    setIsDone(status === TagStatus.DONE);
   }, [selectedTag]);
 
   let handleDeleteTag = () => {
@@ -290,13 +264,7 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
       <Divider />
 
       <div className="row-operations">
-        <Button
-          type="primary"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={handleDeleteTag}
-          size="small"
-        />
+        <Button type="primary" danger icon={<DeleteOutlined />} onClick={handleDeleteTag} size="small" />
       </div>
     </div>
   );
