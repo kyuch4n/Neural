@@ -102,6 +102,10 @@
   }
 }
 
+.row-operations {
+  text-align: right;
+}
+
 .wikis-popover-content {
   display: flex;
   align-items: center;
@@ -115,6 +119,6 @@
   }
 }
 
-.row-operations {
-  text-align: right;
+.countdown-popover-content {
+  width: 120px;
 }
