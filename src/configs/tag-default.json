@@ -1,6 +1,6 @@
 {
   "expires": 86400000,
-  "@comment_expires": "1d",
+  "@comment_expires": "默认过期时间：1d",
   "expireCheckInterval": 600000,
-  "@comment_expireCheckInterval": "10min"
+  "@comment_expireCheckInterval": "过期巡查间隔：10min"
 }

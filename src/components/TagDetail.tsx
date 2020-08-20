@@ -5,6 +5,7 @@ import Button from "antd/lib/button";
 import Divider from "antd/lib/divider";
 import Popover from "antd/lib/popover";
 import AntTag from "antd/lib/tag";
+import Slider from "antd/lib/slider";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -18,7 +19,6 @@ import {
 } from "@ant-design/icons";
 import neuralDB, { Tag, TagStatus } from "../utils/Database";
 import { shake } from "../utils/Window";
-import tagDefault from "../configs/tag-default.json";
 import "./TagDetail.scss";
 
 const { Countdown } = Statistic;
@@ -167,11 +167,11 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     });
   };
 
-  let handleDelay = () => {
+  let handleDelay = (val: number) => {
     neuralDB.ready(async () => {
       try {
         let tag: Tag = Object.assign({}, selectedTag, {
-          expires: Date.now() + tagDefault.expires,
+          expires: Date.now() + val * 24 * 3600000,
           status: TagStatus.PENDING,
         });
         neuralDB.upsert_tag(tag);
@@ -213,7 +213,17 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
               {isExpired ? (
                 <div className="countdown-button-group">
                   <Button type="primary" icon={<SmileOutlined />} size="small" onClick={handleDone} />
-                  <Button type="primary" danger icon={<FrownOutlined />} size="small" onClick={handleDelay} />
+                  <Popover
+                    content={
+                      <div className="countdown-popover-content">
+                        <Slider tipFormatter={(val) => `+${val}D`} min={1} max={7} tooltipVisible onAfterChange={handleDelay} />
+                      </div>
+                    }
+                    placement="topRight"
+                    trigger="click"
+                  >
+                    <Button type="primary" danger icon={<FrownOutlined />} size="small" />
+                  </Popover>
                 </div>
               ) : (
                 <Countdown value={selectedTag.expires} onFinish={() => setIsExpired(true)} />
