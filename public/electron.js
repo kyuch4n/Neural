@@ -26,6 +26,7 @@ const createWindow = () => {
 
   if (process.platform === "darwin") {
     app.dock.setIcon(LOGO_PATH);
+    app.dock.hide();
   }
 
   const devUrl = "http://localhost:3000";
