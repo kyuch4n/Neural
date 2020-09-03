@@ -17,9 +17,9 @@ import {
   SmileOutlined,
   FrownOutlined,
 } from "@ant-design/icons";
-import neuralDB, { Tag, TagStatus } from "../utils/Database";
-import { shake } from "../utils/Window";
-import "./TagDetail.scss";
+import neuralDB, { Tag, TagStatus } from "../utils/database";
+import { shake } from "../utils/window";
+import "./tag-detail.scss";
 
 const { Countdown } = Statistic;
 const { TextArea } = Input;
@@ -39,11 +39,11 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
   let [wikis, setWikis] = useState(selectedTag.wikis || []);
   let [wikiUrl, setWikiUrl] = useState("");
 
-  let handleChangeWikiUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeWikiUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWikiUrl(e.target.value);
   };
 
-  let handleAddWiki = () => {
+  const handleAddWiki = () => {
     neuralDB.ready(async () => {
       try {
         let _wikiUrl = wikiUrl.trim();
@@ -63,7 +63,7 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     });
   };
 
-  let handleDeleteWiki = (wiki: string, idx: number) => {
+  const handleDeleteWiki = (wiki: string, idx: number) => {
     neuralDB.ready(async () => {
       try {
         wikis.splice(idx, 1);
@@ -79,18 +79,18 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     });
   };
 
-  let handleCopyWiki = (wiki: string) => {
+  const handleCopyWiki = (wiki: string) => {
     window.clipboard.writeText(wiki);
   };
 
-  let content = (
+  const content = (
     <div className="wikis-popover-content">
       <Input value={wikiUrl} placeholder="http(s)://" onChange={handleChangeWikiUrl} />
       <Button type="primary" icon={<CheckOutlined />} size="small" onClick={handleAddWiki} />
     </div>
   );
 
-  let wikisRow = (
+  const wikisRow = (
     <div className="row-wikis">
       <div className="wikis-title">
         Wikis
@@ -127,11 +127,11 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
   let [isExpired, setIsExpired] = useState(selectedTag.expires! <= Date.now());
   let [isDone, setIsDone] = useState(selectedTag.status === TagStatus.DONE);
 
-  let handleChangeDescriptions = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChangeDescriptions = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescriptions(e.target.value);
   };
 
-  let handleConfirmEdit = () => {
+  const handleConfirmEdit = () => {
     neuralDB.ready(async () => {
       try {
         let tag: Tag = Object.assign({}, selectedTag, {
@@ -147,12 +147,12 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     });
   };
 
-  let handleCancelEdit = () => {
+  const handleCancelEdit = () => {
     setDescriptions(selectedTag.descriptions || "");
     setIsEditing(false);
   };
 
-  let handleDone = () => {
+  const handleDone = () => {
     neuralDB.ready(async () => {
       try {
         let tag: Tag = Object.assign({}, selectedTag, {
@@ -167,7 +167,7 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     });
   };
 
-  let handleDelay = (val: number) => {
+  const handleDelay = (val: number) => {
     neuralDB.ready(async () => {
       try {
         let tag: Tag = Object.assign({}, selectedTag, {
@@ -183,7 +183,7 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     });
   };
 
-  let descriptionsRow = (
+  const descriptionsRow = (
     <div className="row-descriptions-expires">
       <div className="descriptions">
         <div className="descriptions-title">
@@ -249,7 +249,7 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     setIsDone(status === TagStatus.DONE);
   }, [selectedTag]);
 
-  let handleDeleteTag = () => {
+  const handleDeleteTag = () => {
     neuralDB.ready(async () => {
       try {
         let id = selectedTag.id;

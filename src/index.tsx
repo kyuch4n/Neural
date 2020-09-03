@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import Event from "./utils/Event";
+import Event from "./utils/event";
 
 declare global {
   interface Window {

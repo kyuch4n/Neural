@@ -1,11 +1,11 @@
 import React, { FC, useState, useEffect, useCallback } from "react";
 import throttle from "lodash.throttle";
-import SmartInput from "./components/SmartInput";
-import TagList from "./components/TagList";
-import TagDetail from "./components/TagDetail";
-import neuralDB, { Tag } from "./utils/Database";
-import { SizeType, resizeTo, shake } from "./utils/Window";
-import Timer from "./utils/Timer";
+import SmartInput from "./components/smart-input";
+import TagList from "./components/tag-list";
+import TagDetail from "./components/tag-detail";
+import neuralDB, { Tag } from "./utils/database";
+import { SizeType, resizeTo, shake } from "./utils/window";
+import Timer from "./utils/timer";
 import "./App.scss";
 
 const WAIT = 500;
@@ -28,7 +28,7 @@ const App: FC = () => {
   let [tagList, setTaglist] = useState<Array<Tag>>([]);
   timer.start(setInputVal);
 
-  let onChangeInput = useCallback(
+  const onChangeInput = useCallback(
     throttle(
       (input: string) => {
         input = input.trim();
@@ -38,7 +38,7 @@ const App: FC = () => {
             setSelectedTag(null);
             return;
           case Pattern.isSearchCommand(input):
-            debugger
+            debugger;
             neuralDB.ready(async () => {
               try {
                 let result: any = await neuralDB.match_tag_by_name(input);
@@ -63,7 +63,7 @@ const App: FC = () => {
     []
   );
 
-  let onConfirmInput = (input: string) => {
+  const onConfirmInput = (input: string) => {
     input = input.trim();
     switch (true) {
       case Pattern.isCreateCommand(input):
@@ -103,7 +103,7 @@ const App: FC = () => {
     }
   };
 
-  let onUpdateTag = (tag: Tag) => {
+  const onUpdateTag = (tag: Tag) => {
     let idx = tagList.findIndex((i: Tag) => i.id === tag.id);
     tagList[idx] = tag;
 
@@ -119,22 +119,14 @@ const App: FC = () => {
     onChangeInput(inputVal);
   }, [inputVal, onChangeInput]);
 
-  let tagDetail = selectedTag ? (
-    <TagDetail
-      selectedTag={selectedTag}
-      onDelete={() => setInputVal("")}
-      onUpdate={onUpdateTag}
-    />
+  const tagDetail = selectedTag ? (
+    <TagDetail selectedTag={selectedTag} onDelete={() => setInputVal("")} onUpdate={onUpdateTag} />
   ) : null;
 
-  let resultContainer = tagList.length ? (
+  const resultContainer = tagList.length ? (
     <section className="result-container">
       <aside className="tag-list-container">
-        <TagList
-          tagList={tagList}
-          selectedTag={selectedTag}
-          onSelected={setSelectedTag}
-        />
+        <TagList tagList={tagList} selectedTag={selectedTag} onSelected={setSelectedTag} />
       </aside>
 
       <article className="tag-detail-container">{tagDetail}</article>
@@ -143,11 +135,7 @@ const App: FC = () => {
 
   return (
     <div className="app-container">
-      <SmartInput
-        inputVal={inputVal}
-        onChange={setInputVal}
-        onConfirm={onConfirmInput}
-      />
+      <SmartInput inputVal={inputVal} onChange={setInputVal} onConfirm={onConfirmInput} />
       {resultContainer}
     </div>
   );
