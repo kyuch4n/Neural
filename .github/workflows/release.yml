@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  build and release:
+  build_and_release:
     runs-on: macos-latest
 
     steps:
