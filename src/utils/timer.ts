@@ -1,6 +1,6 @@
-import neuralDb, { Tag } from "./Database";
+import neuralDb, { Tag } from "./database";
 import tagDefault from "../configs/tag-default.json";
-import { show } from "./Window";
+import { show } from "./window";
 
 interface TimerOption {
   interval?: number;

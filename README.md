@@ -16,29 +16,35 @@ yarn start
 yarn build
 ```
 
-## How to use
-
-Create
-
-```
-> ${tag}
-```
-
-Query
-
-```
-${tag}
-```
-
 ## Sample
 
 <p>
   <img src="./sample/main.png" width="600">
 </p>
 
-## TodoList
+## ToDoList
 
 - [ ] 云端同步
-- [ ] 全局快捷键
 - [ ] 开机自启动
-- [ ] ? 查看使用说明 
+
+## How to use
+
+### Command
+
+```
+# Create
+> ${tag} + Enter
+
+# Query
+${tag}
+
+# View All
+@all + Enter
+```
+
+### Shortcut
+
+```
+# Evoke App
+Command + >
+```

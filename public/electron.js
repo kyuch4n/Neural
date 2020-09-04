@@ -1,5 +1,5 @@
 const path = require("path");
-const { app, BrowserWindow, Tray } = require("electron");
+const { app, BrowserWindow, Tray, globalShortcut } = require("electron");
 const isDev = require("electron-is-dev");
 
 /************************************************************************************************
@@ -26,6 +26,7 @@ const createWindow = () => {
 
   if (process.platform === "darwin") {
     app.dock.setIcon(LOGO_PATH);
+    app.dock.hide();
   }
 
   const devUrl = "http://localhost:3000";
@@ -41,10 +42,6 @@ const registWindowEvent = () => {
     e.preventDefault();
   });
 };
-
-/************************************************************************************************
- * BrowserWindow End
- ************************************************************************************************/
 
 /************************************************************************************************
  * Tray
@@ -67,12 +64,25 @@ const registTrayEvent = () => {
 };
 
 /************************************************************************************************
- * Tray End
+ * globalShortcut
  ************************************************************************************************/
+
+const registerGs = () => {
+  globalShortcut.register("CommandOrControl+>", () => {
+    if (mainWindow) {
+      mainWindow.show();
+    }
+  });
+};
+
+const unregisterGsAll = () => {
+  globalShortcut.unregisterAll();
+};
 
 app.on("ready", () => {
   createWindow();
   createTray();
+  registerGs();
 });
 
 app.on("activate", () => {
@@ -82,5 +92,6 @@ app.on("activate", () => {
 });
 
 app.on("before-quit", () => {
+  unregisterGsAll();
   app.exit();
 });

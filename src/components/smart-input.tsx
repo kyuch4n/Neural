@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import Input from "antd/lib/input";
 import { SearchOutlined } from "@ant-design/icons";
-import "./SmartInput.scss";
+import "./smart-input.scss";
 
 interface ISmartInputProps {
   inputVal: string;
@@ -12,11 +12,11 @@ interface ISmartInputProps {
 const SmartInput: FC<ISmartInputProps> = (smartInputProps: ISmartInputProps) => {
   let { inputVal, onChange, onConfirm } = smartInputProps;
 
-  let handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
 
-  let handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.key === "Enter" && onConfirm(inputVal);
   };
 

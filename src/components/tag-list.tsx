@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import List from "antd/lib/list";
-import { Tag } from "../utils/Database";
-import "./TagList.scss";
+import { Tag } from "../utils/database";
+import "./tag-list.scss";
 
 interface ITaglistProps {
   tagList: Array<Tag>;
