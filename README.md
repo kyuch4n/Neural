@@ -22,11 +22,6 @@ yarn build
   <img src="./sample/main.png" width="600">
 </p>
 
-## ToDoList
-
-- [ ] 云端同步
-- [ ] 开机自启动
-
 ## How to use
 
 ### Command
