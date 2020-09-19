@@ -45,11 +45,9 @@ export default class Timer {
   rollup() {
     let self = this;
 
-    return window.setInterval(() => {
-      neuralDb.ready(async () => {
-        let result: any = await neuralDb.query_tag_is_expired();
-        result.map((i: Tag) => self.notify(i));
-      });
+    return window.setInterval(async () => {
+      let result: any = await neuralDb.query_tag_is_expired();
+      result.map((i: Tag) => self.notify(i));
     }, this.interval);
   }
 }

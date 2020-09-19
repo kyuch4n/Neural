@@ -24,37 +24,33 @@ const App: FC = () => {
   let [selectedTag, setSelectedTag] = useState<Tag | null>(null);
   let [tagList, setTaglist] = useState<Array<Tag>>([]);
 
-  const onConfirmInput = (input: string) => {
+  const onConfirmInput = async (input: string) => {
     input = input.trim();
     switch (true) {
       case Pattern.isCreateCommand(input):
         let name = input.slice(1).trim();
         if (!name) return;
-        neuralDB.ready(async () => {
-          try {
-            await neuralDB.upsert_tag({ name });
-            setInputVal(name);
-          } catch (e) {
-            shake();
-            console.log(e);
-          }
-        });
+        try {
+          await neuralDB.upsert_tag({ name });
+          setInputVal(name);
+        } catch (e) {
+          shake();
+          console.log(e);
+        }
         return;
       case Pattern.isSymbolCommand(input):
         let symbol = input.slice(1).trim().toUpperCase();
         switch (symbol) {
           case Symb.ALL:
-            neuralDB.ready(async () => {
-              try {
-                let result: any = await neuralDB.query_tag_by_paging(1, 10000);
-                let list = result.list;
-                setTaglist(list);
-                setSelectedTag(list[0] || null);
-              } catch (e) {
-                shake();
-                console.log(e);
-              }
-            });
+            try {
+              let result: any = await neuralDB.query_tag_by_paging(1, 10000);
+              let list = result.list;
+              setTaglist(list);
+              setSelectedTag(list[0] || null);
+            } catch (e) {
+              shake();
+              console.log(e);
+            }
             return;
           default:
             return;
@@ -62,13 +58,6 @@ const App: FC = () => {
       default:
         return;
     }
-  };
-
-  const onUpdateTag = (tag: Tag) => {
-    let idx = tagList.findIndex((i: Tag) => i.id === tag.id);
-    tagList[idx] = tag;
-    setTaglist(tagList);
-    setSelectedTag(tag);
   };
 
   const onChangeInput = useThrottle((input: string) => {
@@ -79,21 +68,40 @@ const App: FC = () => {
         setSelectedTag(null);
         return;
       case Pattern.isSearchCommand(input):
-        neuralDB.ready(async () => {
-          try {
+        try {
+          (async () => {
             let result: any = await neuralDB.match_tag_by_name(input);
             setTaglist(result);
             setSelectedTag(result[0] || null);
-          } catch (e) {
-            shake();
-            console.log(e);
-          }
-        });
+          })();
+        } catch (e) {
+          shake();
+          console.log(e);
+        }
         return;
       default:
         return;
     }
   });
+
+  const onUpdateTag = (tag: Tag) => {
+    let idx = tagList.findIndex((i: Tag) => i.id === tag.id);
+    tagList[idx] = tag;
+    setTaglist(tagList);
+    setSelectedTag(tag);
+  };
+
+  const onDeleteTag = () => {
+    const input = inputVal.trim();
+    switch (true) {
+      case Pattern.isSymbolCommand(input):
+        return onConfirmInput(input);
+      case Pattern.isSearchCommand(input):
+        return onChangeInput(input);
+      default:
+        return;
+    }
+  };
 
   useEffect(() => (tagList.length ? resizeTo(SizeType.MAX) : resizeTo(SizeType.MIN)), [tagList]);
   useEffect(() => onChangeInput(inputVal), [inputVal, onChangeInput]);
@@ -108,9 +116,7 @@ const App: FC = () => {
             <TagList tagList={tagList} selectedTag={selectedTag} onSelected={setSelectedTag} />
           </aside>
           <div className="tag-detail-container">
-            {selectedTag ? (
-              <TagDetail selectedTag={selectedTag} onDelete={() => setInputVal("")} onUpdate={onUpdateTag} />
-            ) : null}
+            {selectedTag ? <TagDetail selectedTag={selectedTag} onDelete={onDeleteTag} onUpdate={onUpdateTag} /> : null}
           </div>
         </section>
       ) : null}
@@ -118,5 +124,7 @@ const App: FC = () => {
   );
 };
 
-Event.regist();
-ReactDOM.render(<App />, document.getElementById("root"));
+neuralDB.ready(() => {
+  Event.regist();
+  ReactDOM.render(<App />, document.getElementById("root"));
+});

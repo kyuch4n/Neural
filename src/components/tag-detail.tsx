@@ -32,51 +32,60 @@ interface ITagDetailProps {
 
 const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
   let { selectedTag, onDelete, onUpdate } = tagDetailProps;
+  let [wikis, setWikis] = useState(selectedTag.wikis || []);
+  let [wikiUrl, setWikiUrl] = useState("");
+  let [descriptions, setDescriptions] = useState(selectedTag.descriptions || "");
+  let [isEditing, setIsEditing] = useState(false);
+  let [isExpired, setIsExpired] = useState(selectedTag.expires! <= Date.now());
+  let [isDone, setIsDone] = useState(selectedTag.status === TagStatus.DONE);
+
+  useEffect(() => {
+    let { wikis = [], descriptions = "", expires, status } = selectedTag;
+    setWikiUrl("");
+    setWikis(wikis || []);
+    setIsEditing(false);
+    setDescriptions(descriptions || "");
+    setIsExpired(expires! <= Date.now());
+    setIsDone(status === TagStatus.DONE);
+  }, [selectedTag]);
 
   /************************************************************************************************
    * Wikis
    ************************************************************************************************/
-  let [wikis, setWikis] = useState(selectedTag.wikis || []);
-  let [wikiUrl, setWikiUrl] = useState("");
-
   const handleChangeWikiUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWikiUrl(e.target.value);
   };
 
   const handleAddWiki = () => {
-    neuralDB.ready(async () => {
-      try {
-        let _wikiUrl = wikiUrl.trim();
-        if (!_wikiUrl) return;
-        wikis.push(_wikiUrl);
+    try {
+      let _wikiUrl = wikiUrl.trim();
+      if (!_wikiUrl) return;
+      wikis.push(_wikiUrl);
 
-        let tag: Tag = Object.assign({}, selectedTag, {
-          wikis,
-        });
-        neuralDB.upsert_tag(tag);
-        onUpdate(tag);
-        setWikiUrl("");
-      } catch (e) {
-        shake();
-        console.log(e);
-      }
-    });
+      let tag: Tag = Object.assign({}, selectedTag, {
+        wikis,
+      });
+      neuralDB.upsert_tag(tag);
+      onUpdate(tag);
+      setWikiUrl("");
+    } catch (e) {
+      shake();
+      console.log(e);
+    }
   };
 
   const handleDeleteWiki = (wiki: string, idx: number) => {
-    neuralDB.ready(async () => {
-      try {
-        wikis.splice(idx, 1);
-        let tag: Tag = Object.assign({}, selectedTag, {
-          wikis,
-        });
-        neuralDB.upsert_tag(tag);
-        onUpdate(tag);
-      } catch (e) {
-        shake();
-        console.log(e);
-      }
-    });
+    try {
+      wikis.splice(idx, 1);
+      let tag: Tag = Object.assign({}, selectedTag, {
+        wikis,
+      });
+      neuralDB.upsert_tag(tag);
+      onUpdate(tag);
+    } catch (e) {
+      shake();
+      console.log(e);
+    }
   };
 
   const handleCopyWiki = (wiki: string) => {
@@ -116,35 +125,25 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
   );
 
   /************************************************************************************************
-   * Wikis End
-   ************************************************************************************************/
-
-  /************************************************************************************************
    * Descriptions
    ************************************************************************************************/
-  let [descriptions, setDescriptions] = useState(selectedTag.descriptions || "");
-  let [isEditing, setIsEditing] = useState(false);
-  let [isExpired, setIsExpired] = useState(selectedTag.expires! <= Date.now());
-  let [isDone, setIsDone] = useState(selectedTag.status === TagStatus.DONE);
 
   const handleChangeDescriptions = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescriptions(e.target.value);
   };
 
   const handleConfirmEdit = () => {
-    neuralDB.ready(async () => {
-      try {
-        let tag: Tag = Object.assign({}, selectedTag, {
-          descriptions: descriptions.trim(),
-        });
-        neuralDB.upsert_tag(tag);
-        onUpdate(tag);
-        setIsEditing(false);
-      } catch (e) {
-        shake();
-        console.log(e);
-      }
-    });
+    try {
+      let tag: Tag = Object.assign({}, selectedTag, {
+        descriptions: descriptions.trim(),
+      });
+      neuralDB.upsert_tag(tag);
+      onUpdate(tag);
+      setIsEditing(false);
+    } catch (e) {
+      shake();
+      console.log(e);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -153,34 +152,30 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
   };
 
   const handleDone = () => {
-    neuralDB.ready(async () => {
-      try {
-        let tag: Tag = Object.assign({}, selectedTag, {
-          status: TagStatus.DONE,
-        });
-        neuralDB.upsert_tag(tag);
-        onUpdate(tag);
-      } catch (e) {
-        shake();
-        console.log(e);
-      }
-    });
+    try {
+      let tag: Tag = Object.assign({}, selectedTag, {
+        status: TagStatus.DONE,
+      });
+      neuralDB.upsert_tag(tag);
+      onUpdate(tag);
+    } catch (e) {
+      shake();
+      console.log(e);
+    }
   };
 
   const handleDelay = (val: number) => {
-    neuralDB.ready(async () => {
-      try {
-        let tag: Tag = Object.assign({}, selectedTag, {
-          expires: Date.now() + val * 24 * 3600000,
-          status: TagStatus.PENDING,
-        });
-        neuralDB.upsert_tag(tag);
-        onUpdate(tag);
-      } catch (e) {
-        shake();
-        console.log(e);
-      }
-    });
+    try {
+      let tag: Tag = Object.assign({}, selectedTag, {
+        expires: Date.now() + val * 24 * 3600000,
+        status: TagStatus.PENDING,
+      });
+      neuralDB.upsert_tag(tag);
+      onUpdate(tag);
+    } catch (e) {
+      shake();
+      console.log(e);
+    }
   };
 
   const descriptionsRow = (
@@ -216,7 +211,13 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
                   <Popover
                     content={
                       <div className="countdown-popover-content">
-                        <Slider tipFormatter={(val) => `+${val}D`} min={1} max={7} tooltipVisible onAfterChange={handleDelay} />
+                        <Slider
+                          tipFormatter={(val) => `+${val}D`}
+                          min={1}
+                          max={7}
+                          tooltipVisible
+                          onAfterChange={handleDelay}
+                        />
                       </div>
                     }
                     placement="topRight"
@@ -236,30 +237,18 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
   );
 
   /************************************************************************************************
-   * Descriptions End
+   * Tag Detail
    ************************************************************************************************/
 
-  useEffect(() => {
-    let { wikis = [], descriptions = "", expires, status } = selectedTag;
-    setWikiUrl("");
-    setWikis(wikis || []);
-    setIsEditing(false);
-    setDescriptions(descriptions || "");
-    setIsExpired(expires! <= Date.now());
-    setIsDone(status === TagStatus.DONE);
-  }, [selectedTag]);
-
-  const handleDeleteTag = () => {
-    neuralDB.ready(async () => {
-      try {
-        let id = selectedTag.id;
-        await neuralDB.delete_tag_by_id(id!);
-        onDelete();
-      } catch (e) {
-        shake();
-        console.log(e);
-      }
-    });
+  const handleDeleteTag = async () => {
+    try {
+      let id = selectedTag.id;
+      await neuralDB.delete_tag_by_id(id!);
+      onDelete();
+    } catch (e) {
+      shake();
+      console.log(e);
+    }
   };
 
   return (
