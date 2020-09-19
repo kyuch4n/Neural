@@ -4,11 +4,13 @@ import SmartInput from "./components/smart-input";
 import TagList from "./components/tag-list";
 import TagDetail from "./components/tag-detail";
 import neuralDB, { Tag } from "./utils/database";
-import { SizeType, resizeTo, shake } from "./utils/window";
+import { SizeType, resizeTo } from "./utils/window";
 import Event from "./utils/event";
 import Timer from "./utils/timer";
 import useThrottle from "./hooks/use-throttle";
+import { CatchWrapper } from "./decorators/catch";
 import { Symb } from "./const/base";
+
 import "./index.scss";
 
 const Pattern = {
@@ -24,33 +26,23 @@ const App: FC = () => {
   let [selectedTag, setSelectedTag] = useState<Tag | null>(null);
   let [tagList, setTaglist] = useState<Array<Tag>>([]);
 
-  const onConfirmInput = async (input: string) => {
+  const onConfirmInput = CatchWrapper(async (input: string) => {
     input = input.trim();
     switch (true) {
       case Pattern.isCreateCommand(input):
         let name = input.slice(1).trim();
         if (!name) return;
-        try {
-          await neuralDB.upsert_tag({ name });
-          setInputVal(name);
-        } catch (e) {
-          shake();
-          console.log(e);
-        }
+        await neuralDB.upsert_tag({ name });
+        setInputVal(name);
         return;
       case Pattern.isSymbolCommand(input):
         let symbol = input.slice(1).trim().toUpperCase();
         switch (symbol) {
           case Symb.ALL:
-            try {
-              let result: any = await neuralDB.query_tag_by_paging(1, 10000);
-              let list = result.list;
-              setTaglist(list);
-              setSelectedTag(list[0] || null);
-            } catch (e) {
-              shake();
-              console.log(e);
-            }
+            let result: any = await neuralDB.query_tag_by_paging(1, 10000);
+            let list = result.list;
+            setTaglist(list);
+            setSelectedTag(list[0] || null);
             return;
           default:
             return;
@@ -58,7 +50,7 @@ const App: FC = () => {
       default:
         return;
     }
-  };
+  });
 
   const onChangeInput = useThrottle((input: string) => {
     input = input.trim();
@@ -68,16 +60,11 @@ const App: FC = () => {
         setSelectedTag(null);
         return;
       case Pattern.isSearchCommand(input):
-        try {
-          (async () => {
-            let result: any = await neuralDB.match_tag_by_name(input);
-            setTaglist(result);
-            setSelectedTag(result[0] || null);
-          })();
-        } catch (e) {
-          shake();
-          console.log(e);
-        }
+        CatchWrapper(async () => {
+          let result: any = await neuralDB.match_tag_by_name(input);
+          setTaglist(result);
+          setSelectedTag(result[0] || null);
+        })();
         return;
       default:
         return;

@@ -18,7 +18,7 @@ import {
   FrownOutlined,
 } from "@ant-design/icons";
 import neuralDB, { Tag, TagStatus } from "../utils/database";
-import { shake } from "../utils/window";
+import { CatchWrapper } from "../decorators/catch";
 import "./tag-detail.scss";
 
 const { Countdown } = Statistic;
@@ -56,37 +56,27 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     setWikiUrl(e.target.value);
   };
 
-  const handleAddWiki = () => {
-    try {
-      let _wikiUrl = wikiUrl.trim();
-      if (!_wikiUrl) return;
-      wikis.push(_wikiUrl);
+  const handleAddWiki = CatchWrapper(() => {
+    let _wikiUrl = wikiUrl.trim();
+    if (!_wikiUrl) return;
+    wikis.push(_wikiUrl);
 
-      let tag: Tag = Object.assign({}, selectedTag, {
-        wikis,
-      });
-      neuralDB.upsert_tag(tag);
-      onUpdate(tag);
-      setWikiUrl("");
-    } catch (e) {
-      shake();
-      console.log(e);
-    }
-  };
+    let tag: Tag = Object.assign({}, selectedTag, {
+      wikis,
+    });
+    neuralDB.upsert_tag(tag);
+    onUpdate(tag);
+    setWikiUrl("");
+  });
 
-  const handleDeleteWiki = (wiki: string, idx: number) => {
-    try {
-      wikis.splice(idx, 1);
-      let tag: Tag = Object.assign({}, selectedTag, {
-        wikis,
-      });
-      neuralDB.upsert_tag(tag);
-      onUpdate(tag);
-    } catch (e) {
-      shake();
-      console.log(e);
-    }
-  };
+  const handleDeleteWiki = CatchWrapper((wiki: string, idx: number) => {
+    wikis.splice(idx, 1);
+    let tag: Tag = Object.assign({}, selectedTag, {
+      wikis,
+    });
+    neuralDB.upsert_tag(tag);
+    onUpdate(tag);
+  });
 
   const handleCopyWiki = (wiki: string) => {
     window.clipboard.writeText(wiki);
@@ -132,51 +122,36 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
     setDescriptions(e.target.value);
   };
 
-  const handleConfirmEdit = () => {
-    try {
-      let tag: Tag = Object.assign({}, selectedTag, {
-        descriptions: descriptions.trim(),
-      });
-      neuralDB.upsert_tag(tag);
-      onUpdate(tag);
-      setIsEditing(false);
-    } catch (e) {
-      shake();
-      console.log(e);
-    }
-  };
+  const handleConfirmEdit = CatchWrapper(() => {
+    let tag: Tag = Object.assign({}, selectedTag, {
+      descriptions: descriptions.trim(),
+    });
+    neuralDB.upsert_tag(tag);
+    onUpdate(tag);
+    setIsEditing(false);
+  });
 
   const handleCancelEdit = () => {
     setDescriptions(selectedTag.descriptions || "");
     setIsEditing(false);
   };
 
-  const handleDone = () => {
-    try {
-      let tag: Tag = Object.assign({}, selectedTag, {
-        status: TagStatus.DONE,
-      });
-      neuralDB.upsert_tag(tag);
-      onUpdate(tag);
-    } catch (e) {
-      shake();
-      console.log(e);
-    }
-  };
+  const handleDone = CatchWrapper(() => {
+    let tag: Tag = Object.assign({}, selectedTag, {
+      status: TagStatus.DONE,
+    });
+    neuralDB.upsert_tag(tag);
+    onUpdate(tag);
+  });
 
-  const handleDelay = (val: number) => {
-    try {
-      let tag: Tag = Object.assign({}, selectedTag, {
-        expires: Date.now() + val * 24 * 3600000,
-        status: TagStatus.PENDING,
-      });
-      neuralDB.upsert_tag(tag);
-      onUpdate(tag);
-    } catch (e) {
-      shake();
-      console.log(e);
-    }
-  };
+  const handleDelay = CatchWrapper((val: number) => {
+    let tag: Tag = Object.assign({}, selectedTag, {
+      expires: Date.now() + val * 24 * 3600000,
+      status: TagStatus.PENDING,
+    });
+    neuralDB.upsert_tag(tag);
+    onUpdate(tag);
+  });
 
   const descriptionsRow = (
     <div className="row-descriptions-expires">
@@ -240,16 +215,11 @@ const TagDetail: FC<ITagDetailProps> = (tagDetailProps: ITagDetailProps) => {
    * Tag Detail
    ************************************************************************************************/
 
-  const handleDeleteTag = async () => {
-    try {
-      let id = selectedTag.id;
-      await neuralDB.delete_tag_by_id(id!);
-      onDelete();
-    } catch (e) {
-      shake();
-      console.log(e);
-    }
-  };
+  const handleDeleteTag = CatchWrapper(async () => {
+    let id = selectedTag.id;
+    await neuralDB.delete_tag_by_id(id!);
+    onDelete();
+  });
 
   return (
     <div className="tag-detail">
