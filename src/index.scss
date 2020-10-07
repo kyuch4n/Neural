@@ -13,6 +13,20 @@
     user-select: none;
   }
 
+  .cmd-line {
+    .ria-input {
+      height: 60px;
+      font-size: 24px;
+      font-weight: 100;
+      border: 1px solid $light-grey !important;
+    }
+
+    .ria-complete {
+      font-size: 24px;
+      font-weight: 100;
+    }
+  }
+
   .result-container {
     margin-top: -1px;
     flex: 1;

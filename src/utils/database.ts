@@ -1,20 +1,6 @@
 import shortid from "shortid";
-import tagDefault from "../configs/tag-default.json";
-
-enum IDBReadyState {
-  PENDING = "pending",
-  DONE = "done",
-}
-
-export enum EventType {
-  UpsertTag,
-  DeleteTag,
-}
-
-export enum TagStatus {
-  PENDING = "pending",
-  DONE = "done",
-}
+import { TagDefault } from "../const/base";
+import { IDBReadyState, TagStatus, EventType } from "../const/base";
 
 export interface Tag {
   id?: string;
@@ -142,7 +128,7 @@ export class NeuralDB {
     tag.id = tag.id || id;
 
     // 默认过期时间
-    let expires = Date.now() + tagDefault.expires;
+    let expires = Date.now() + TagDefault.expires;
     tag.expires = tag.expires || expires;
 
     // status

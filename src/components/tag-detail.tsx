@@ -17,7 +17,8 @@ import {
   SmileOutlined,
   FrownOutlined,
 } from "@ant-design/icons";
-import neuralDB, { Tag, TagStatus } from "../utils/database";
+import neuralDB, { Tag } from "../utils/database";
+import { TagStatus } from "../const/base";
 import { CatchWrapper } from "../decorators/catch";
 import "./tag-detail.scss";
 
