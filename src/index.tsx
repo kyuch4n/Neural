@@ -1,6 +1,8 @@
 import React, { FC, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import SmartInput from "./components/smart-input";
+// import InlineAutocomplete from "react-inline-autocomplete";
+// import "react-inline-autocomplete/dist/index.css";
 import TagList from "./components/tag-list";
 import TagDetail from "./components/tag-detail";
 import neuralDB, { Tag } from "./utils/database";
