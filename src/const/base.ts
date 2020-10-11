@@ -1,5 +1,5 @@
 export enum Symb {
-  ALL = "ALL",
+  ALL = "all",
 }
 
 export enum IDBReadyState {

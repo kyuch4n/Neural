@@ -19,6 +19,10 @@
       font-size: 24px;
       font-weight: 100;
       border: 1px solid $light-grey !important;
+
+      &::placeholder {
+        color: $grey;
+      }
     }
 
     .ria-complete {

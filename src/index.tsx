@@ -10,7 +10,7 @@ import Event from "./utils/event";
 import Timer from "./utils/timer";
 import useThrottle from "./hooks/use-throttle";
 import { CatchWrapper } from "./decorators/catch";
-import { Symb } from "./const/base";
+import { Symb, TagStatus } from "./const/base";
 import "./index.scss";
 
 const Pattern = {
@@ -69,11 +69,10 @@ const App: FC = () => {
         setInputVal(name);
         return;
       case Pattern.isSymbolCommand(input):
-        let symbol = input.slice(1).trim().toUpperCase();
+        let [symbol, status] = input.slice(1).trim().toLowerCase().split(":");
         switch (symbol) {
           case Symb.ALL:
-            let result: any = await neuralDB.query_tag_by_paging(1, 10000);
-            let list = result.list;
+            let list = (await neuralDB.query_tag_by_status(status as TagStatus)) as Tag[];
             setTaglist(list);
             setSelectedTag(list[0] || null);
             return;
@@ -114,6 +113,8 @@ const App: FC = () => {
         className="cmd-line"
         value={inputVal}
         dataSource={dataSource}
+        caseSensitive={false}
+        placeholder="Nice to use Neural!"
         onChange={setInputVal}
         onPressEnter={onPressEnter}
       ></InlineAutocomplete>
