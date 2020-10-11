@@ -1,4 +1,4 @@
-import size from "../configs/win-size.json";
+import { WinSize } from "../const/base";
 
 export enum SizeType {
   MIN = 0,
@@ -15,10 +15,10 @@ export const resizeTo = (sizeType: SizeType) => {
 
   switch (sizeType) {
     case SizeType.MIN:
-      win.setSize(size.width, size.minHeight);
+      win.setSize(WinSize.width, WinSize.minHeight);
       break;
     case SizeType.MAX:
-      win.setSize(size.width, size.maxHeight);
+      win.setSize(WinSize.width, WinSize.maxHeight);
       break;
   }
 };

@@ -1,20 +1,6 @@
 import shortid from "shortid";
-import tagDefault from "../configs/tag-default.json";
-
-enum IDBReadyState {
-  PENDING = "pending",
-  DONE = "done",
-}
-
-export enum EventType {
-  UpsertTag,
-  DeleteTag,
-}
-
-export enum TagStatus {
-  PENDING = "pending",
-  DONE = "done",
-}
+import { TagDefault } from "../const/base";
+import { IDBReadyState, TagStatus, EventType } from "../const/base";
 
 export interface Tag {
   id?: string;
@@ -142,7 +128,7 @@ export class NeuralDB {
     tag.id = tag.id || id;
 
     // 默认过期时间
-    let expires = Date.now() + tagDefault.expires;
+    let expires = Date.now() + TagDefault.expires;
     tag.expires = tag.expires || expires;
 
     // status
@@ -176,6 +162,51 @@ export class NeuralDB {
         res(true);
       };
       deleteRequest.onerror = (err: any) => rej(err);
+    });
+  }
+
+  /**
+   * 根据 id 查询对应的 Tag
+   * @param id
+   */
+  // public query_tag_by_id(id: string) {
+  //   let transaction = this.db_ins.transaction(NeuralDB.STORE_TAG, "readonly");
+  //   let store = transaction.objectStore(NeuralDB.STORE_TAG);
+
+  //   return new Promise((res, rej) => {
+  //     let getReuest = store.get(id);
+  //     getReuest.onsuccess = () => res(getReuest.result);
+  //     getReuest.onerror = (err: any) => rej(err);
+  //   });
+  // }
+
+  /**
+   * 根据 tagName 模糊匹配
+   * @param keyword
+   * @param limit
+   */
+  public match_tag_by_name(keyword: string, limit: number = 10) {
+    let transaction = this.db_ins.transaction(NeuralDB.STORE_TAG, "readonly");
+    let store = transaction.objectStore(NeuralDB.STORE_TAG);
+
+    return new Promise((res, rej) => {
+      let list: Array<Tag> = [];
+      let cursorRequest = store.openCursor();
+
+      cursorRequest.onsuccess = function (event: any) {
+        let cursor = event.target.result;
+        if (!cursor || list.length >= limit) return res(list);
+
+        let name = cursor.value.name;
+        let lcName = name.toLowerCase();
+        let lcKeyword = keyword.toLowerCase();
+        if (lcName.indexOf(lcKeyword) > -1) {
+          name === keyword ? list.unshift(cursor.value) : list.push(cursor.value);
+        }
+
+        cursor.continue();
+      };
+      cursorRequest.onerror = (err: any) => rej(err);
     });
   }
 
@@ -215,44 +246,27 @@ export class NeuralDB {
   }
 
   /**
-   * 根据 id 查询对应的 Tag
-   * @param id
+   * 根据 TagStatus 查询对应的 Tag
+   * @param status TagStatus
    */
-  public query_tag_by_id(id: string) {
-    let transaction = this.db_ins.transaction(NeuralDB.STORE_TAG, "readonly");
-    let store = transaction.objectStore(NeuralDB.STORE_TAG);
+  public query_tag_by_status(status?: TagStatus) {
+    // Query all by default
+    if (!status) {
+      return this.query_tag_by_paging(1, Infinity).then((res) => res.list);
+    }
 
-    return new Promise((res, rej) => {
-      let getReuest = store.get(id);
-      getReuest.onsuccess = () => res(getReuest.result);
-      getReuest.onerror = (err: any) => rej(err);
-    });
-  }
-
-  /**
-   * 根据 tagName 模糊匹配
-   * @param keyword
-   * @param limit
-   */
-  public match_tag_by_name(keyword: string, limit: number = 10) {
     let transaction = this.db_ins.transaction(NeuralDB.STORE_TAG, "readonly");
     let store = transaction.objectStore(NeuralDB.STORE_TAG);
 
     return new Promise((res, rej) => {
       let list: Array<Tag> = [];
       let cursorRequest = store.openCursor();
-
       cursorRequest.onsuccess = function (event: any) {
         let cursor = event.target.result;
-        if (!cursor || list.length >= limit) return res(list);
-
-        let name = cursor.value.name;
-        let lcName = name.toLowerCase();
-        let lcKeyword = keyword.toLowerCase();
-        if (lcName.indexOf(lcKeyword) > -1) {
-          name === keyword ? list.unshift(cursor.value) : list.push(cursor.value);
+        if (!cursor) return res(list);
+        if (cursor.value.status === status) {
+          list.push(cursor.value);
         }
-
         cursor.continue();
       };
       cursorRequest.onerror = (err: any) => rej(err);

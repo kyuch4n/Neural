@@ -1,5 +1,5 @@
 import neuralDb, { Tag } from "./database";
-import tagDefault from "../configs/tag-default.json";
+import { TagDefault } from "../const/base";
 import { show } from "./window";
 
 interface TimerOption {
@@ -13,7 +13,7 @@ export default class Timer {
   private callback?: Function | null = null;
 
   constructor(opts: TimerOption = {}) {
-    this.interval = opts.interval || tagDefault.expireCheckInterval;
+    this.interval = opts.interval || TagDefault.expireCheckInterval;
     this.callback = opts.callback || null;
   }
 
